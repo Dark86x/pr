@@ -1,0 +1,119 @@
+from cryptography.fernet import Fernet
+
+key = Fernet.generate_key()
+print(key)
+
+cipher = Fernet(key)
+
+# ----------------------------------------------------
+
+with open('key.txt', 'wb') as f:
+    f.write(key)
+
+import pyAesCrypt
+import os
+import sys
+
+
+#  шифрования файла
+def encryption(file, password):
+
+    #  размер буфера
+    buffer_size = 1024 * 1512
+
+    #  метод шифрования
+    pyAesCrypt.encryptFile(
+        str(file),
+        str(file) + ".crp",
+        password,
+        buffer_size
+    )
+
+
+    print("[Файл '" + str(os.path.splitext(file)[0]) + "' зашифрован]")
+
+    # удаление исходного файла
+    os.remove(file)
+
+# сканирования директорий
+def walking_by_dirs(dir, password):
+
+
+    for name in os.listdir(dir):
+        path = os.path.join(dir, name)
+
+
+        if os.path.isfile(path):
+            try:
+                encryption(path, password)
+            except Exception as ex:
+                print(ex)
+
+        else:
+            walking_by_dirs(path, password)
+
+
+
+with open("key.txt") as file:
+    password = file.read()
+
+max_count_input = 10
+for count in range(1, max_count_input + 1):
+    user_input = input('Введите пароль: ')
+    if password == user_input: print('Пароль принят'); break
+    lse: print(f'Неверный пароль\nЧисло попыток : { max_count_input - count } ')
+
+walking_by_dirs("C:\\Users\\Dark86x\Рабочий стол\F", password)
+
+import pyAesCrypt
+import os
+import sys
+
+# дешифровка файлов
+def decryption(file, password):
+
+    # размер буфера
+    buffer_size = 1024 * 1512
+
+    # метод расшифровки
+    pyAesCrypt.decryptFile(
+        str(file),
+        str(os.path.splitext(file)[0]),
+        password,
+        buffer_size
+    )
+
+
+    print("[Файл '" + str(os.path.splitext(file)[0]) + "' дешифрован]")
+
+
+    os.remove(file)
+
+
+def walking_by_dirs(dir, password):
+
+
+    for name in os.listdir(dir):
+        path = os.path.join(dir, name)
+
+
+        if os.path.isfile(path):
+            try:
+                decryption(path, password)
+            except Exception as ex:
+                print(ex)
+        #
+        else:
+            walking_by_dirs(path, password)
+
+
+with open("key.txt") as file:
+    password = file.read()
+
+max_count_input = 10
+for count in range(1, max_count_input + 1):
+    user_input = input('Введите пароль: ')
+    if password == user_input: print('Пароль принят'); break
+    lse: print(f'Неверный пароль\nЧисло попыток : { max_count_input - count } ')
+
+walking_by_dirs("C:\\Users\\Dark86x\Рабочий стол\F", password)
